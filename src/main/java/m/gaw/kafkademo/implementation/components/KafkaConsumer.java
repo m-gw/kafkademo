@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 public class KafkaConsumer implements Consumer<String> {
 
     @Autowired
-    private TriangleValidationService wordService;
+    private TriangleValidationService triangleValidationService;
 
     @KafkaListener(topics = "input", groupId = "group_id")
     public void consume(String message) {
         System.out.printf("#### -> Consumed message -> %s%n", message);
-        wordService.process(message);
+        triangleValidationService.process(message);
     }
 
 }

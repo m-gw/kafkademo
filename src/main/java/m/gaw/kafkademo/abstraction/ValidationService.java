@@ -1,25 +1,20 @@
 package m.gaw.kafkademo.abstraction;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.AllArgsConstructor;
 import m.gaw.kafkademo.abstraction.components.*;
 import m.gaw.kafkademo.abstraction.model.DeserializationException;
+import m.gaw.kafkademo.abstraction.model.SerializationException;
 import m.gaw.kafkademo.abstraction.model.ValidatedObject;
 
+@AllArgsConstructor
 public abstract class ValidationService<I, T extends ValidatedObject, O> {
 
     protected Deserializer<I,T> deserializer;
     protected Serializer<T,O> serializer;
     protected ErrorInputConverter<I,O> errorInputConverter;
-    protected Validator validator;
+    protected Validator<T> validator;
     protected Producer<O> producer;
-
-    public ValidationService(Deserializer<I, T> deserializer, Serializer<T, O> serializer, ErrorInputConverter<I, O> errorInputConverter, Validator validator, Producer<O> producer) {
-        this.deserializer = deserializer;
-        this.serializer = serializer;
-        this.errorInputConverter = errorInputConverter;
-        this.validator = validator;
-        this.producer = producer;
-    }
 
     public void process(I input){
         T validatedObject;
@@ -36,7 +31,7 @@ public abstract class ValidationService<I, T extends ValidatedObject, O> {
         final O outputMessage;
         try {
             outputMessage = serializer.serialize(validatedObject);
-        } catch (JsonProcessingException e) {
+        } catch (SerializationException e) {
             e.printStackTrace();
             return;
         }
