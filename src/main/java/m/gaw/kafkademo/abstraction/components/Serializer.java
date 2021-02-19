@@ -5,5 +5,7 @@ import m.gaw.kafkademo.abstraction.model.SerializationException;
 import m.gaw.kafkademo.abstraction.model.ValidatedObject;
 
 public interface Serializer<T extends ValidatedObject,U> {
+
     U serialize(T validatedObject) throws SerializationException;
+
 }

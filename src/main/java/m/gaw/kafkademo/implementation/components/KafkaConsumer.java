@@ -12,7 +12,7 @@ public class KafkaConsumer implements Consumer<String> {
     @Autowired
     private TriangleValidationService triangleValidationService;
 
-    @KafkaListener(topics = "input", groupId = "group_id")
+    @KafkaListener(topics = "${spring.kafka.topic.input}", groupId = "group_id")
     public void consume(String message) {
         System.out.printf("#### -> Consumed message -> %s%n", message);
         triangleValidationService.process(message);
