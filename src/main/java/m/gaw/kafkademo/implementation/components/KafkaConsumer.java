@@ -1,7 +1,7 @@
 package m.gaw.kafkademo.implementation.components;
 
 import m.gaw.kafkademo.abstraction.components.Consumer;
-import m.gaw.kafkademo.implementation.WordValidationService;
+import m.gaw.kafkademo.implementation.TriangleValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class KafkaConsumer implements Consumer<String> {
 
     @Autowired
-    private WordValidationService wordService;
+    private TriangleValidationService wordService;
 
     @KafkaListener(topics = "input", groupId = "group_id")
     public void consume(String message) {

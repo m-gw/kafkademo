@@ -1,32 +1,45 @@
 package m.gaw.kafkademo.abstraction;
 
-import m.gaw.kafkademo.abstraction.components.Deserializer;
-import m.gaw.kafkademo.abstraction.components.Producer;
-import m.gaw.kafkademo.abstraction.components.Serializer;
-import m.gaw.kafkademo.abstraction.components.Validator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import m.gaw.kafkademo.abstraction.components.*;
+import m.gaw.kafkademo.abstraction.model.DeserializationException;
 import m.gaw.kafkademo.abstraction.model.ValidatedObject;
 
-public abstract class ValidationService<T,U> {
+public abstract class ValidationService<I, T extends ValidatedObject, O> {
 
-    protected Deserializer<T> deserializer;
-    protected Serializer<U> serializer;
+    protected Deserializer<I,T> deserializer;
+    protected Serializer<T,O> serializer;
+    protected ErrorInputConverter<I,O> errorInputConverter;
     protected Validator validator;
-    protected Producer<U> producer;
+    protected Producer<O> producer;
 
-    public ValidationService(Deserializer<T> deserializer, Serializer<U> serializer, Validator validator, Producer<U> producer) {
+    public ValidationService(Deserializer<I, T> deserializer, Serializer<T, O> serializer, ErrorInputConverter<I, O> errorInputConverter, Validator validator, Producer<O> producer) {
         this.deserializer = deserializer;
         this.serializer = serializer;
+        this.errorInputConverter = errorInputConverter;
         this.validator = validator;
         this.producer = producer;
     }
 
-    public void process(T input){
-        ValidatedObject validatedObject = deserializer.deserialize(input);
+    public void process(I input){
+        T validatedObject;
+        try {
+            validatedObject = deserializer.deserialize(input);
+        } catch (DeserializationException e){
+            producer.produce(topic(false), errorInputConverter.convert(input));
+            return;
+        }
 
         final boolean isValid = validator.isValid(validatedObject);
         final String topic = topic(isValid);
 
-        final U outputMessage = serializer.serialize(validatedObject);
+        final O outputMessage;
+        try {
+            outputMessage = serializer.serialize(validatedObject);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return;
+        }
         producer.produce(topic, outputMessage);
     }
 
