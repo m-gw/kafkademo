@@ -5,7 +5,5 @@ import m.gaw.kafkademo.abstraction.model.ValidatedObject;
 
 @Getter
 public class Triangle extends ValidatedObject {
-    private int a;
-    private int b;
-    private int c;
+    private int a,b,c;
 }

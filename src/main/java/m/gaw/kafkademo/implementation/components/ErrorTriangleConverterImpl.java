@@ -5,7 +5,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ErrorTriangleConverterImpl implements ErrorInputConverter<String,String> {
+
     public String convert(String errorInput) {
         return errorInput;
     }
+
 }
