@@ -7,7 +7,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class WordValidationService extends ValidationService<String,String> {
 
-    public WordValidationService(Deserializer<String> deserializer, Serializer<String> serializer, Validator validator, Producer<String> validObjectProducer, Producer<String> invalidObjectProducer) {
-        super(deserializer, serializer, validator, validObjectProducer, invalidObjectProducer);
+    private final String TOPIC = "output";
+
+    public WordValidationService(Deserializer<String> deserializer, Serializer<String> serializer, Validator validator, Producer<String> producer) {
+        super(deserializer, serializer, validator, producer);
     }
+
+    public String topic(boolean isValid){
+        return TOPIC;
+    }
+
 }

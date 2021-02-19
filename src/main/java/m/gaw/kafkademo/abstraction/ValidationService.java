@@ -6,33 +6,30 @@ import m.gaw.kafkademo.abstraction.components.Serializer;
 import m.gaw.kafkademo.abstraction.components.Validator;
 import m.gaw.kafkademo.abstraction.model.ValidatedObject;
 
-public class ValidationService<T,U> {
+public abstract class ValidationService<T,U> {
 
     protected Deserializer<T> deserializer;
     protected Serializer<U> serializer;
     protected Validator validator;
-    protected Producer<U> validObjectProducer;
-    protected Producer<U> invalidObjectProducer;
+    protected Producer<U> producer;
 
-    public ValidationService(Deserializer<T> deserializer, Serializer<U> serializer, Validator validator, Producer<U> validObjectProducer, Producer<U> invalidObjectProducer) {
+    public ValidationService(Deserializer<T> deserializer, Serializer<U> serializer, Validator validator, Producer<U> producer) {
         this.deserializer = deserializer;
         this.serializer = serializer;
         this.validator = validator;
-        this.validObjectProducer = validObjectProducer;
-        this.invalidObjectProducer = invalidObjectProducer;
+        this.producer = producer;
     }
 
     public void process(T input){
-
         ValidatedObject validatedObject = deserializer.deserialize(input);
-        U outputMessage = serializer.serialize(validatedObject);
 
-        if(validator.isValid(validatedObject))
-            validObjectProducer.produce(outputMessage);
+        final boolean isValid = validator.isValid(validatedObject);
+        final String topic = topic(isValid);
 
-        else
-            invalidObjectProducer.produce(outputMessage);
-
+        final U outputMessage = serializer.serialize(validatedObject);
+        producer.produce(topic, outputMessage);
     }
+
+    protected abstract String topic(boolean isValid);
 
 }
