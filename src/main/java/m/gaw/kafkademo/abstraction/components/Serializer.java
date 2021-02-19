@@ -1,11 +1,11 @@
 package m.gaw.kafkademo.abstraction.components;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import m.gaw.kafkademo.abstraction.model.SerializationException;
 import m.gaw.kafkademo.abstraction.model.ValidatedObject;
+
+import java.util.Optional;
 
 public interface Serializer<T extends ValidatedObject,U> {
 
-    U serialize(T validatedObject) throws SerializationException;
+    Optional<U> serialize(T validatedObject);
 
 }

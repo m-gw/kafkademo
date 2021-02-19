@@ -1,11 +1,10 @@
 package m.gaw.kafkademo.abstraction;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import m.gaw.kafkademo.abstraction.components.*;
-import m.gaw.kafkademo.abstraction.model.DeserializationException;
-import m.gaw.kafkademo.abstraction.model.SerializationException;
 import m.gaw.kafkademo.abstraction.model.ValidatedObject;
+
+import java.util.Optional;
 
 @AllArgsConstructor
 public abstract class ValidationService<I, T extends ValidatedObject, O> {
@@ -16,26 +15,21 @@ public abstract class ValidationService<I, T extends ValidatedObject, O> {
     protected Validator<T> validator;
     protected Producer<O> producer;
 
-    public void process(I input){
-        T validatedObject;
-        try {
-            validatedObject = deserializer.deserialize(input);
-        } catch (DeserializationException e){
-            producer.produce(topic(false), errorInputConverter.convert(input));
-            return;
-        }
+    public void process(I input) {
+        final Optional<T> deserializedObject = deserializer.deserialize(input);
 
-        final boolean isValid = validator.isValid(validatedObject);
-        final String topic = topic(isValid);
+        if (deserializedObject.isPresent()) {
+            final boolean isValid = validator.isValid(deserializedObject.get());
+            final String topic = topic(isValid);
 
-        final O outputMessage;
-        try {
-            outputMessage = serializer.serialize(validatedObject);
-        } catch (SerializationException e) {
-            e.printStackTrace();
-            return;
+            serializer.serialize(deserializedObject.get())
+                    .ifPresent(outputMessage -> producer.produce(topic, outputMessage));
+
+        } else {
+            final String errorTopic = topic(false);
+            producer.produce(errorTopic, errorInputConverter.convert(input));
+
         }
-        producer.produce(topic, outputMessage);
     }
 
     protected abstract String topic(boolean isValid);

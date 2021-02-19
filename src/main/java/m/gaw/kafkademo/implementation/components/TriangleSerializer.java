@@ -3,20 +3,21 @@ package m.gaw.kafkademo.implementation.components;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import m.gaw.kafkademo.abstraction.components.Serializer;
-import m.gaw.kafkademo.abstraction.model.SerializationException;
 import m.gaw.kafkademo.implementation.model.Triangle;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 public class TriangleSerializer implements Serializer<Triangle,String> {
 
-    private static ObjectMapper MAPPER = new ObjectMapper();
+    private final static ObjectMapper MAPPER = new ObjectMapper();
 
-    public String serialize(Triangle validatedObject) throws SerializationException{
+    public Optional<String> serialize(Triangle validatedObject){
         try {
-            return MAPPER.writeValueAsString(validatedObject);
+            return Optional.of(MAPPER.writeValueAsString(validatedObject));
         } catch (JsonProcessingException e) {
-            throw new SerializationException();
+            return Optional.empty();
         }
     }
 
