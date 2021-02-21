@@ -1,9 +1,9 @@
 package m.gaw.kafkademo.abstraction.components;
 
-import m.gaw.kafkademo.abstraction.model.ValidatedObject;
+import m.gaw.kafkademo.abstraction.model.ObjectToBeValidated;
 
-public interface Validator<T extends ValidatedObject> {
+public interface Validator<T extends ObjectToBeValidated> {
 
-    boolean isValid(T validatedObject);
+    boolean isValid(T objectToBeValidated);
 
 }

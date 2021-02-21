@@ -15,11 +15,11 @@ public class TriangleSerializer implements Serializer<Triangle,String> {
 
     private final static ObjectMapper MAPPER = new ObjectMapper();
 
-    public Optional<String> serialize(Triangle validatedObject){
+    public Optional<String> serialize(Triangle triangle){
         try {
-            return Optional.of(MAPPER.writeValueAsString(validatedObject));
+            return Optional.of(MAPPER.writeValueAsString(triangle));
         } catch (JsonProcessingException e) {
-            log.error("Triangle '{}' cannot be serialized", validatedObject);
+            log.error("Triangle '{}' cannot be serialized", triangle);
             return Optional.empty();
         }
     }

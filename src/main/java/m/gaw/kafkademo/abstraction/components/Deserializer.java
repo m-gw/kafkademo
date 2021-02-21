@@ -1,10 +1,10 @@
 package m.gaw.kafkademo.abstraction.components;
 
-import m.gaw.kafkademo.abstraction.model.ValidatedObject;
+import m.gaw.kafkademo.abstraction.model.ObjectToBeValidated;
 
 import java.util.Optional;
 
-public interface Deserializer<T,U extends ValidatedObject> {
+public interface Deserializer<T,U extends ObjectToBeValidated> {
 
     Optional<U> deserialize(T input);
 

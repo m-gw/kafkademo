@@ -1,14 +1,13 @@
 package m.gaw.kafkademo.abstraction;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import m.gaw.kafkademo.abstraction.components.*;
-import m.gaw.kafkademo.abstraction.model.ValidatedObject;
+import m.gaw.kafkademo.abstraction.model.ObjectToBeValidated;
 
 import java.util.Optional;
 
 @AllArgsConstructor
-public abstract class ValidationService<I, T extends ValidatedObject, O> {
+public abstract class ValidationService<I, T extends ObjectToBeValidated, O> {
 
     protected Deserializer<I,T> deserializer;
     protected Serializer<T,O> serializer;
