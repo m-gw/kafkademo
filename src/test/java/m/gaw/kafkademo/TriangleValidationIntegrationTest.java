@@ -4,7 +4,6 @@ import m.gaw.kafkademo.implementation.components.KafkaConsumer;
 import m.gaw.kafkademo.implementation.components.KafkaProducer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -12,13 +11,6 @@ import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 public class TriangleValidationIntegrationTest {
-
-    @Value("${spring.kafka.topic.valid}")
-    private String validObjectsTopic;
-
-    @Value("${spring.kafka.topic.invalid}")
-    private String invalidObjectsTopic;
-
 
     @Autowired
     private KafkaConsumer consumer;
@@ -36,7 +28,7 @@ public class TriangleValidationIntegrationTest {
         consumer.consume(input);
 
         //then
-        verify(producer).produce(invalidObjectsTopic, input);
+        verify(producer).produce(input, false);
     }
 
     @Test
@@ -48,7 +40,7 @@ public class TriangleValidationIntegrationTest {
         consumer.consume(input);
 
         //then
-        verify(producer).produce(invalidObjectsTopic, input);
+        verify(producer).produce(input, false);
     }
 
     @Test
@@ -60,7 +52,7 @@ public class TriangleValidationIntegrationTest {
         consumer.consume(input);
 
         //then
-        verify(producer).produce(invalidObjectsTopic, input);
+        verify(producer).produce(input, false);
     }
 
     @Test
@@ -72,7 +64,7 @@ public class TriangleValidationIntegrationTest {
         consumer.consume(input);
 
         //then
-        verify(producer).produce(validObjectsTopic, input);
+        verify(producer).produce(input, true);
     }
 
 }

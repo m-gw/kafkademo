@@ -20,18 +20,14 @@ public abstract class ValidationService<I, T extends ObjectToBeValidated, O> {
 
         if (deserializedObject.isPresent()) {
             final boolean isValid = validator.isValid(deserializedObject.get());
-            final String topic = topic(isValid);
 
             serializer.serialize(deserializedObject.get())
-                    .ifPresent(outputMessage -> producer.produce(topic, outputMessage));
+                    .ifPresent(outputMessage -> producer.produce(outputMessage, isValid));
 
         } else {
-            final String errorTopic = topic(false);
-            producer.produce(errorTopic, errorInputConverter.convert(input));
+            producer.produce(errorInputConverter.convert(input), false);
 
         }
     }
-
-    protected abstract String topic(boolean isValid);
 
 }
