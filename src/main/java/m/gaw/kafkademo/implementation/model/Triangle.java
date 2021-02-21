@@ -1,6 +1,8 @@
 package m.gaw.kafkademo.implementation.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import m.gaw.kafkademo.abstraction.model.ValidatedObject;
 
@@ -8,6 +10,8 @@ import java.util.stream.Stream;
 
 @Getter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Triangle extends ValidatedObject {
 
     private int a,b,c;
