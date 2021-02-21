@@ -14,7 +14,7 @@ public class KafkaConsumer implements Consumer<String> {
 
     private final TriangleValidationService triangleValidationService;
 
-    @KafkaListener(topics = "${spring.kafka.topic.input}", groupId = "group_id")
+    @KafkaListener(topics = "${spring.kafka.topic.input}", groupId = "m_gaw")
     public void consume(String message) {
         log.info("Received message: '{}'", message);
         triangleValidationService.process(message);
